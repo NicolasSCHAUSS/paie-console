@@ -28,7 +28,7 @@ public class AppTest {
         Integer tailleInit = services.lister().size();
         services.sauver("dumb", "totest", true, new BigDecimal(45.165468), new BigDecimal(45.165468));
         Integer tailleCreation = services.lister().size();
-        services.supprimer(tailleCreation-1);
+        services.supprimer(tailleCreation);
         Integer tailleSuppression = services.lister().size();
         
         assertEquals(tailleInit, tailleSuppression);
