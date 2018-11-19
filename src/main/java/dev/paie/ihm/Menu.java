@@ -3,40 +3,47 @@ package dev.paie.ihm;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import dev.paie.service.CotisationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class Menu {
 	
 	private Map<Integer, OptionMenu> options = new HashMap<>();
+	@Autowired
 	private Scanner scanner;
 
-	public Menu(Scanner scanner, CotisationService cotisService) {
-		init(scanner, cotisService);
+	public Menu(Scanner scanner, ApplicationContext context) {
+		init(scanner, context);
 		this.scanner = scanner;
 	}
 
-	private void init(Scanner scanner, CotisationService cotisService) {
-		this.options.put(1, new ListerCotisationsOptionMenu(cotisService));
-		this.options.put(2, new CreerCotisationOptionMenu(scanner));
+	private void init(Scanner scanner, ApplicationContext context) {
+		Map<String, OptionMenu> optionMenuBeans = context.getBeansOfType(OptionMenu.class);
+		AtomicInteger index = new AtomicInteger();
+		
+		optionMenuBeans.forEach((cle,val)-> {
+			this.options.put(index.incrementAndGet(), val);
+		});
 	}
 	
 	public void demarrer() {
 		
-		// Afficher les libellés des options
-		this.options.forEach((key, option) -> {
-			System.out.println(key + ". " + option.getLibelle());
-		});
-		
-		int optionMenuChoisie = this.scanner.nextInt();
-		
-		this.options.get(optionMenuChoisie).executer();
+		while(true)
+		{
+			// Afficher les libellés des options
+			this.options.forEach((key, option) -> {
+				System.out.println(key + ". " + option.getLibelle());
+			});
+			
+			int optionMenuChoisie = this.scanner.nextInt();
+			
+			this.options.get(optionMenuChoisie).executer();
+		}
 		
 	}
-	
-	
-	
-	
-
 
 }

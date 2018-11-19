@@ -1,26 +1,17 @@
 package dev.paie.console;
 
-import java.util.Scanner;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import dev.paie.ihm.Menu;
-import dev.paie.service.CotisationService;
-import dev.paie.service.CotisationServiceJpa;
 
-/**
- * Hello world!
- *
- */
 public class App {
-	
 	
 	public static void main(String[] args) {
 		
-		Scanner scanner = new Scanner(System.in);
-		CotisationService cotisService = new CotisationServiceJpa();
+		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class)) {
 		
-		Menu menu = new Menu(scanner, cotisService);
-		menu.demarrer();
-	
-		scanner.close();
+			Menu menu = context.getBean(Menu.class);
+			menu.demarrer();
+		}
 	}
 }
